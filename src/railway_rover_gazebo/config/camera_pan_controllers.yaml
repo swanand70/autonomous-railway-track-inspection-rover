@@ -1,0 +1,11 @@
+joint_state_controller:
+  type: joint_state_controller/JointStateController
+  publish_rate: 50
+
+camera_pan_controller:
+  type: position_controllers/JointPositionController
+  joint: camera_pan_joint
+  pid:
+    p: 10.0
+    i: 0.0
+    d: 0.5

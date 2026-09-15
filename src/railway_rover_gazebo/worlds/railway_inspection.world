@@ -1,0 +1,928 @@
+<?xml version="1.0" ?>
+
+<sdf version="1.6">
+
+  <world name="railway_inspection_world">
+
+    <!-- ==================== PHYSICS ==================== -->
+
+    <physics type="ode">
+      <max_step_size>0.001</max_step_size>
+      <real_time_update_rate>1000</real_time_update_rate>
+      <real_time_factor>1</real_time_factor>
+    </physics>
+
+    <!-- ==================== LIGHTING ==================== -->
+
+    <include>
+      <uri>model://sun</uri>
+    </include>
+
+    <!-- ==================== GROUND ==================== -->
+
+    <model name="ground">
+      <static>true</static>
+
+      <link name="ground_link">
+
+        <collision name="ground_collision">
+          <geometry>
+            <box>
+              <size>80 20 0.10</size>
+            </box>
+          </geometry>
+          <pose>0 0 -0.05 0 0 0</pose>
+        </collision>
+
+        <visual name="ground_visual">
+          <geometry>
+            <box>
+              <size>80 20 0.10</size>
+            </box>
+          </geometry>
+
+          <pose>0 0 -0.05 0 0 0</pose>
+
+          <material>
+            <ambient>0.22 0.20 0.18 1</ambient>
+            <diffuse>0.30 0.28 0.25 1</diffuse>
+          </material>
+
+        </visual>
+
+      </link>
+    </model>
+
+    <!-- ================================================= -->
+    <!-- BALLAST BED                                       -->
+    <!-- ================================================= -->
+
+    <model name="ballast_bed">
+      <static>true</static>
+
+      <link name="ballast_link">
+
+        <collision name="ballast_collision">
+          <geometry>
+            <box>
+              <size>70 2.8 0.10</size>
+            </box>
+          </geometry>
+          <pose>0 0 0.05 0 0 0</pose>
+        </collision>
+
+        <visual name="ballast_visual">
+
+          <geometry>
+            <box>
+              <size>70 2.8 0.10</size>
+            </box>
+          </geometry>
+
+          <pose>0 0 0.05 0 0 0</pose>
+
+          <material>
+            <ambient>0.32 0.30 0.28 1</ambient>
+            <diffuse>0.38 0.36 0.33 1</diffuse>
+          </material>
+
+        </visual>
+
+      </link>
+    </model>
+
+    <!-- ================================================= -->
+    <!-- RAILS                                             -->
+    <!-- ================================================= -->
+
+    <model name="left_rail">
+      <static>true</static>
+
+      <link name="rail_link">
+
+        <collision name="rail_collision">
+
+          <geometry>
+            <box>
+              <size>70 0.14 0.16</size>
+            </box>
+          </geometry>
+
+          <pose>0 0.75 0.18 0 0 0</pose>
+
+        </collision>
+
+                  <visual name="rail_base_visual">
+            <geometry>
+              <box>
+                <size>70 0.30 0.035</size>
+              </box>
+            </geometry>
+            <pose>0 0.75 0.105 0 0 0</pose>
+            <material>
+              <ambient>0.22 0.23 0.25 1</ambient>
+              <diffuse>0.30 0.31 0.34 1</diffuse>
+              <specular>0.75 0.75 0.78 1</specular>
+            </material>
+          </visual>
+
+          <visual name="rail_web_visual">
+            <geometry>
+              <box>
+                <size>70 0.10 0.105</size>
+              </box>
+            </geometry>
+            <pose>0 0.75 0.165 0 0 0</pose>
+            <material>
+              <ambient>0.25 0.26 0.28 1</ambient>
+              <diffuse>0.36 0.37 0.40 1</diffuse>
+              <specular>0.85 0.85 0.88 1</specular>
+            </material>
+          </visual>
+
+          <visual name="rail_head_visual">
+            <geometry>
+              <box>
+                <size>70 0.20 0.055</size>
+              </box>
+            </geometry>
+            <pose>0 0.75 0.225 0 0 0</pose>
+            <material>
+              <ambient>0.36 0.37 0.39 1</ambient>
+              <diffuse>0.48 0.49 0.52 1</diffuse>
+              <specular>0.95 0.95 0.98 1</specular>
+            </material>
+          </visual>
+
+      </link>
+    </model>
+
+    <model name="right_rail">
+      <static>true</static>
+
+      <link name="rail_link">
+
+        <collision name="rail_collision">
+
+          <geometry>
+            <box>
+              <size>70 0.14 0.16</size>
+            </box>
+          </geometry>
+
+          <pose>0 -0.75 0.18 0 0 0</pose>
+
+        </collision>
+
+                  <visual name="rail_base_visual">
+            <geometry>
+              <box>
+                <size>70 0.30 0.035</size>
+              </box>
+            </geometry>
+            <pose>0 -0.75 0.105 0 0 0</pose>
+            <material>
+              <ambient>0.22 0.23 0.25 1</ambient>
+              <diffuse>0.30 0.31 0.34 1</diffuse>
+              <specular>0.75 0.75 0.78 1</specular>
+            </material>
+          </visual>
+
+          <visual name="rail_web_visual">
+            <geometry>
+              <box>
+                <size>70 0.10 0.105</size>
+              </box>
+            </geometry>
+            <pose>0 -0.75 0.165 0 0 0</pose>
+            <material>
+              <ambient>0.25 0.26 0.28 1</ambient>
+              <diffuse>0.36 0.37 0.40 1</diffuse>
+              <specular>0.85 0.85 0.88 1</specular>
+            </material>
+          </visual>
+
+          <visual name="rail_head_visual">
+            <geometry>
+              <box>
+                <size>70 0.20 0.055</size>
+              </box>
+            </geometry>
+            <pose>0 -0.75 0.225 0 0 0</pose>
+            <material>
+              <ambient>0.36 0.37 0.39 1</ambient>
+              <diffuse>0.48 0.49 0.52 1</diffuse>
+              <specular>0.95 0.95 0.98 1</specular>
+            </material>
+          </visual>
+
+      </link>
+    </model>
+
+    <!-- ================================================= -->
+    <!-- SLEEPER MACRO                                     -->
+    <!-- ================================================= -->
+
+    <model name="sleepers">
+
+      <static>true</static>
+
+      <link name="sleeper_link">
+
+        <visual name="sleeper_visual">
+
+          <geometry>
+            <box>
+              <size>0.28 2.0 0.18</size>
+            </box>
+          </geometry>
+
+          <material>
+            <ambient>0.24 0.12 0.06 1</ambient>
+            <diffuse>0.32 0.16 0.08 1</diffuse>
+          </material>
+
+        </visual>
+
+        <collision name="sleeper_collision">
+
+          <geometry>
+            <box>
+              <size>0.28 2.0 0.18</size>
+            </box>
+          </geometry>
+
+        </collision>
+
+      </link>
+
+      <!-- Repeated sleepers -->
+
+      <pose>-33 0 0.10 0 0 0</pose>
+
+    </model>
+
+    <!-- ================================================= -->
+    <!-- ADDITIONAL SLEEPERS                               -->
+    <!-- ================================================= -->
+
+    <model name="sleeper_01">
+      <static>true</static>
+      <pose>-30 0 0.10 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+          <material><ambient>0.24 0.12 0.06 1</ambient></material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+
+    <model name="sleeper_02">
+      <static>true</static>
+      <pose>-27 0 0.10 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+          <material><ambient>0.24 0.12 0.06 1</ambient></material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="sleeper_03">
+      <static>true</static>
+      <pose>-24 0 0.10 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+          <material><ambient>0.24 0.12 0.06 1</ambient></material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="sleeper_04">
+      <static>true</static>
+      <pose>-21 0 0.10 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+          <material><ambient>0.24 0.12 0.06 1</ambient></material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="sleeper_05">
+      <static>true</static>
+      <pose>-18 0 0.10 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+          <material><ambient>0.24 0.12 0.06 1</ambient></material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="sleeper_06">
+      <static>true</static>
+      <pose>-15 0 0.10 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+          <material><ambient>0.24 0.12 0.06 1</ambient></material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="sleeper_07">
+      <static>true</static>
+      <pose>-12 0 0.10 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+          <material><ambient>0.24 0.12 0.06 1</ambient></material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="sleeper_08">
+      <static>true</static>
+      <pose>-9 0 0.10 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+          <material><ambient>0.24 0.12 0.06 1</ambient></material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="sleeper_09">
+      <static>true</static>
+      <pose>-6 0 0.10 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+          <material><ambient>0.24 0.12 0.06 1</ambient></material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="sleeper_10">
+      <static>true</static>
+      <pose>-3 0 0.10 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+          <material><ambient>0.24 0.12 0.06 1</ambient></material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="sleeper_11">
+      <static>true</static>
+      <pose>0 0 0.10 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+          <material><ambient>0.24 0.12 0.06 1</ambient></material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <!-- More sleepers continue along the track -->
+
+    <model name="sleeper_12">
+      <static>true</static>
+      <pose>3 0 0.10 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+          <material><ambient>0.24 0.12 0.06 1</ambient></material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="sleeper_13">
+      <static>true</static>
+      <pose>6 0 0.10 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+          <material><ambient>0.24 0.12 0.06 1</ambient></material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="sleeper_14">
+      <static>true</static>
+      <pose>9 0 0.10 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+          <material><ambient>0.24 0.12 0.06 1</ambient></material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="sleeper_15">
+      <static>true</static>
+      <pose>12 0 0.10 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+          <material><ambient>0.24 0.12 0.06 1</ambient></material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="sleeper_16">
+      <static>true</static>
+      <pose>15 0 0.10 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+          <material><ambient>0.24 0.12 0.06 1</ambient></material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="sleeper_17">
+      <static>true</static>
+      <pose>18 0 0.10 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+          <material><ambient>0.24 0.12 0.06 1</ambient></material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="sleeper_18">
+      <static>true</static>
+      <pose>21 0 0.10 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+          <material><ambient>0.24 0.12 0.06 1</ambient></material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="sleeper_19">
+      <static>true</static>
+      <pose>24 0 0.10 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+          <material><ambient>0.24 0.12 0.06 1</ambient></material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="sleeper_20">
+      <static>true</static>
+      <pose>27 0 0.10 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+          <material><ambient>0.24 0.12 0.06 1</ambient></material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <model name="sleeper_21">
+      <static>true</static>
+      <pose>30 0 0.10 0 0 0</pose>
+      <link name="link">
+        <visual name="visual">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+          <material><ambient>0.24 0.12 0.06 1</ambient></material>
+        </visual>
+        <collision name="collision">
+          <geometry><box><size>0.28 2.0 0.18</size></box></geometry>
+        </collision>
+      </link>
+    </model>
+
+    <!-- ================================================= -->
+    <!-- CRACK DEFECTS                                    -->
+    <!-- ================================================= -->
+
+    <model name="crack_defect_01">
+      <static>true</static>
+      <pose>7 0.75 0.265 0 0 0</pose>
+
+      <link name="link">
+
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>1.0 0.025 0.008</size>
+            </box>
+          </geometry>
+
+          <material>
+            <ambient>0.02 0.02 0.02 1</ambient>
+            <diffuse>0.02 0.02 0.02 1</diffuse>
+          </material>
+        </visual>
+
+      </link>
+    </model>
+
+    <model name="crack_defect_02">
+      <static>true</static>
+      <pose>18 -0.75 0.265 0 0 0</pose>
+
+      <link name="link">
+
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>1.5 0.030 0.008</size>
+            </box>
+          </geometry>
+
+          <material>
+            <ambient>0.01 0.01 0.01 1</ambient>
+            <diffuse>0.01 0.01 0.01 1</diffuse>
+          </material>
+        </visual>
+
+      </link>
+    </model>
+
+    <!-- ================================================= -->
+    <!-- RUST DEFECTS                                     -->
+    <!-- ================================================= -->
+
+    <model name="rust_defect_01">
+      <static>true</static>
+      <pose>-3 0.75 0.27 0 0 0</pose>
+
+      <link name="link">
+
+        <visual name="visual">
+
+          <geometry>
+            <box>
+              <size>0.8 0.025 0.012</size>
+            </box>
+          </geometry>
+
+          <material>
+            <ambient>0.55 0.12 0.03 1</ambient>
+            <diffuse>0.70 0.18 0.04 1</diffuse>
+          </material>
+
+        </visual>
+
+      </link>
+
+    </model>
+
+    <model name="rust_defect_02">
+      <static>true</static>
+      <pose>13 -0.75 0.27 0 0 0</pose>
+
+      <link name="link">
+
+        <visual name="visual">
+
+          <geometry>
+            <box>
+              <size>1.2 0.025 0.012</size>
+            </box>
+          </geometry>
+
+          <material>
+            <ambient>0.55 0.12 0.03 1</ambient>
+            <diffuse>0.70 0.18 0.04 1</diffuse>
+          </material>
+
+        </visual>
+
+      </link>
+
+    </model>
+
+    <!-- ================================================= -->
+    <!-- STRUCTURAL DAMAGE                                -->
+    <!-- ================================================= -->
+
+    <model name="damaged_sleeper">
+      <static>true</static>
+      <pose>23 0 0.22 0 0.25 0</pose>
+
+      <link name="link">
+
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.28 2.0 0.18</size>
+            </box>
+          </geometry>
+
+          <material>
+            <ambient>0.40 0.18 0.05 1</ambient>
+            <diffuse>0.48 0.22 0.06 1</diffuse>
+          </material>
+
+        </visual>
+
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.28 2.0 0.18</size>
+            </box>
+          </geometry>
+        </collision>
+
+      </link>
+
+    </model>
+
+    <!-- ================================================= -->
+    <!-- OBSTACLES                                        -->
+    <!-- ================================================= -->
+
+    <model name="inspection_obstacle_01">
+
+      <static>true</static>
+
+      <pose>10 0 0.45 0 0 0</pose>
+
+      <link name="link">
+
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.7 0.7 0.9</size>
+            </box>
+          </geometry>
+        </collision>
+
+        <visual name="visual">
+
+          <geometry>
+            <box>
+              <size>0.7 0.7 0.9</size>
+            </box>
+          </geometry>
+
+          <material>
+            <ambient>0.75 0.10 0.05 1</ambient>
+            <diffuse>0.90 0.15 0.05 1</diffuse>
+          </material>
+
+        </visual>
+
+      </link>
+
+    </model>
+
+    <model name="inspection_obstacle_02">
+
+      <static>true</static>
+
+      <pose>27 0.15 0.35 0 0 0</pose>
+
+      <link name="link">
+
+        <collision name="collision">
+          <geometry>
+            <cylinder>
+              <radius>0.30</radius>
+              <length>0.70</length>
+            </cylinder>
+          </geometry>
+        </collision>
+
+        <visual name="visual">
+
+          <geometry>
+            <cylinder>
+              <radius>0.30</radius>
+              <length>0.70</length>
+            </cylinder>
+          </geometry>
+
+          <material>
+            <ambient>0.05 0.35 0.10 1</ambient>
+            <diffuse>0.08 0.55 0.15 1</diffuse>
+          </material>
+
+        </visual>
+
+      </link>
+
+    </model>
+
+    <!-- ================================================= -->
+    <!-- TRACK-SIDE STRUCTURES                             -->
+    <!-- ================================================= -->
+
+    <model name="track_side_marker_01">
+      <static>true</static>
+      <pose>-10 3 1.0 0 0 0</pose>
+
+      <link name="link">
+
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.3 0.3 2.0</size>
+            </box>
+          </geometry>
+
+          <material>
+            <ambient>0.10 0.40 0.12 1</ambient>
+            <diffuse>0.15 0.55 0.18 1</diffuse>
+          </material>
+
+        </visual>
+
+      </link>
+
+    </model>
+
+    <model name="track_side_marker_02">
+      <static>true</static>
+      <pose>20 -3 1.0 0 0 0</pose>
+
+      <link name="link">
+
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.3 0.3 2.0</size>
+            </box>
+          </geometry>
+
+          <material>
+            <ambient>0.10 0.40 0.12 1</ambient>
+            <diffuse>0.15 0.55 0.18 1</diffuse>
+          </material>
+
+        </visual>
+
+      </link>
+
+    </model>
+
+    <!-- ================================================= -->
+    <!-- WORLD BOUNDARIES                                  -->
+    <!-- ================================================= -->
+
+    <model name="left_boundary">
+      <static>true</static>
+      <pose>0 8 1.0 0 0 0</pose>
+
+      <link name="link">
+
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>70 0.15 2.0</size>
+            </box>
+          </geometry>
+        </collision>
+
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>70 0.15 2.0</size>
+            </box>
+          </geometry>
+
+          <material>
+            <ambient>0.08 0.08 0.08 1</ambient>
+            <diffuse>0.12 0.12 0.12 1</diffuse>
+          </material>
+        </visual>
+
+      </link>
+    </model>
+
+    <model name="right_boundary">
+      <static>true</static>
+      <pose>0 -8 1.0 0 0 0</pose>
+
+      <link name="link">
+
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>70 0.15 2.0</size>
+            </box>
+          </geometry>
+        </collision>
+
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>70 0.15 2.0</size>
+            </box>
+          </geometry>
+
+          <material>
+            <ambient>0.08 0.08 0.08 1</ambient>
+            <diffuse>0.12 0.12 0.12 1</diffuse>
+          </material>
+        </visual>
+
+      </link>
+    </model>
+
+    <!-- ==================== WORLD END ==================== -->
+
+  
+    <!-- Invisible lateral guides for rover wheel alignment -->
+    <model name="railway_rover_track_guides">
+      <static>true</static>
+
+      <link name="track_guide_link">
+
+        <collision name="left_track_guide_collision">
+          <pose>0 0.65 0.34 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>70 0.04 0.16</size>
+            </box>
+          </geometry>
+        </collision>
+
+        <collision name="right_track_guide_collision">
+          <pose>0 -0.65 0.34 0 0 0</pose>
+          <geometry>
+            <box>
+              <size>70 0.04 0.16</size>
+            </box>
+          </geometry>
+        </collision>
+
+      </link>
+    </model>
+
+</world>
+
+</sdf>

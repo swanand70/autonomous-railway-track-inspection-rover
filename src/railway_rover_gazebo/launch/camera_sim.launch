@@ -1,0 +1,46 @@
+<launch>
+
+  <!-- Gazebo railway world -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name"
+         value="$(find railway_rover_gazebo)/worlds/railway_inspection.world"/>
+    <arg name="paused" value="false"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui" value="true"/>
+    <arg name="headless" value="false"/>
+    <arg name="debug" value="false"/>
+  </include>
+
+  <!-- Robot description -->
+  <param name="robot_description"
+         command="$(find xacro)/xacro $(find railway_rover_description)/urdf/railway_rover.xacro"/>
+
+  <!-- Controller parameters -->
+  <group ns="/railway_rover">
+    <rosparam file="$(find railway_rover_gazebo)/config/camera_pan_controllers.yaml"
+              command="load"/>
+  </group>
+
+  <!-- TF -->
+  <node name="robot_state_publisher"
+        pkg="robot_state_publisher"
+        type="robot_state_publisher"
+        output="screen"/>
+
+  <!-- Spawn exactly one rover -->
+  <node name="spawn_railway_rover"
+        pkg="gazebo_ros"
+        type="spawn_model"
+        output="screen"
+        args="-urdf -param robot_description -model railway_rover -x -30 -y 0 -z 0"/>
+
+  <!-- Start controllers -->
+  <node name="railway_rover_controller_spawner"
+        pkg="controller_manager"
+        type="spawner"
+        ns="/railway_rover"
+        respawn="false"
+        output="screen"
+        args="joint_state_controller camera_pan_controller"/>
+
+</launch>
