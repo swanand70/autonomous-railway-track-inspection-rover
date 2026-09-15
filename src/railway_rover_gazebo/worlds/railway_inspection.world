@@ -896,33 +896,18 @@
     <!-- ==================== WORLD END ==================== -->
 
   
-    <!-- Invisible lateral guides for rover wheel alignment -->
-    <model name="railway_rover_track_guides">
-      <static>true</static>
+    
 
-      <link name="track_guide_link">
 
-        <collision name="left_track_guide_collision">
-          <pose>0 0.65 0.34 0 0 0</pose>
-          <geometry>
-            <box>
-              <size>70 0.04 0.16</size>
-            </box>
-          </geometry>
-        </collision>
+    <!-- ==================== GUI CAMERA VIEW ==================== -->
+    <gui fullscreen="0">
+      <camera name="user_camera">
+        <pose>-36.0 -4.5 3.2 0 0.30 0.50</pose>
+        <view_controller>orbit</view_controller>
+      </camera>
+    </gui>
 
-        <collision name="right_track_guide_collision">
-          <pose>0 -0.65 0.34 0 0 0</pose>
-          <geometry>
-            <box>
-              <size>70 0.04 0.16</size>
-            </box>
-          </geometry>
-        </collision>
+  </world>
 
-      </link>
-    </model>
-
-</world>
 
 </sdf>

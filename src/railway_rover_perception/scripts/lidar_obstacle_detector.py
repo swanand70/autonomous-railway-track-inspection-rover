@@ -30,9 +30,9 @@ class LidarObstacleDetector:
         )
 
         self.min_distance = 0.5
-        self.max_distance = 3.0
-        self.min_height = 0.30
-        self.max_height = 1.5
+        self.max_distance = 7.5
+        self.min_height = -0.50
+        self.max_height = 0.25
 
         rospy.loginfo("LiDAR obstacle detector started.")
         rospy.loginfo("Publishing obstacle detection, distance and position.")

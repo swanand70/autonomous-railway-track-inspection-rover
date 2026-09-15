@@ -1,0 +1,43 @@
+<launch>
+  <!-- Arguments -->
+  <arg name="gui" default="true" doc="Start Gazebo GUI"/>
+  <arg name="paused" default="false" doc="Start simulation paused"/>
+  <arg name="rviz" default="false" doc="Start RViz visualization"/>
+  <arg name="patrol_speed" default="0.60" doc="Rover forward patrol speed (m/s)"/>
+  <arg name="stop_distance" default="2.20" doc="Obstacle safety stopping clearance (m)"/>
+  <arg name="x" default="-30" doc="Initial rover x coordinate"/>
+
+  <!-- 1. Gazebo Simulation Environment & Rover -->
+  <include file="$(find railway_rover_gazebo)/launch/camera_sim.launch">
+    <arg name="gui" value="$(arg gui)"/>
+    <arg name="paused" value="$(arg paused)"/>
+    <arg name="x" value="$(arg x)"/>
+  </include>
+
+  <!-- 2. Multimodal Perception Node (Cracks, Rust, Obstacles, Annotated Image) -->
+  <node name="railway_perception"
+        pkg="railway_rover_perception"
+        type="railway_perception.py"
+        output="screen"
+        respawn="true"/>
+
+  <!-- 3. Autonomous Patrol Controller (Speed & Safe Stopping) -->
+  <node name="railway_patrol"
+        pkg="railway_rover_control"
+        type="railway_patrol.py"
+        output="screen"
+        respawn="true">
+    <param name="patrol_speed" value="$(arg patrol_speed)"/>
+    <param name="stop_distance" value="$(arg stop_distance)"/>
+  </node>
+
+  <!-- 4. Optional RViz -->
+  <group if="$(arg rviz)">
+    <node name="rviz"
+          pkg="rviz"
+          type="rviz"
+          args="-d $(find railway_rover_bringup)/config/railway_rover.rviz"
+          output="screen"/>
+  </group>
+
+</launch>

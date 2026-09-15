@@ -9,16 +9,17 @@
   <xacro:property name="base_width"  value="1.15"/>
   <xacro:property name="base_height" value="0.24"/>
 
-  <xacro:property name="wheel_radius" value="0.18"/>
-  <xacro:property name="wheel_width"  value="0.16"/>
-  <xacro:property name="wheel_mass"   value="1.2"/>
+  <xacro:property name="wheel_radius"       value="0.18"/>
+  <xacro:property name="wheel_tread_width"  value="0.12"/>
+  <xacro:property name="flange_radius"      value="0.215"/>
+  <xacro:property name="flange_width"       value="0.02"/>
+  <xacro:property name="wheel_mass"         value="2.0"/>
 
-  <xacro:property name="base_mass" value="18.0"/>
+  <xacro:property name="base_mass" value="20.0"/>
 
   <!-- Railway geometry -->
   <xacro:property name="rail_gauge" value="1.50"/>
-  <xacro:property name="wheel_y" value="0.75"/>
-
+  <xacro:property name="wheel_y"    value="0.75"/>
   <xacro:property name="rail_top_z" value="0.26"/>
 
   <!-- ========================================================= -->
@@ -33,12 +34,12 @@
     <color rgba="0.02 0.05 0.22 1.0"/>
   </material>
 
-  <material name="wheel_black">
-    <color rgba="0.025 0.025 0.025 1.0"/>
+  <material name="wheel_metal">
+    <color rgba="0.25 0.25 0.28 1.0"/>
   </material>
 
-  <material name="wheel_rubber">
-    <color rgba="0.06 0.06 0.06 1.0"/>
+  <material name="wheel_flange_mat">
+    <color rgba="0.18 0.18 0.20 1.0"/>
   </material>
 
   <material name="sensor_dark">
@@ -108,10 +109,10 @@
   </joint>
 
   <!-- ========================================================= -->
-  <!-- WHEELS                                                     -->
+  <!-- FLANGED RAILWAY WHEELS                                    -->
   <!-- ========================================================= -->
 
-  <xacro:macro name="wheel" params="name x y">
+  <xacro:macro name="wheel" params="name x y flange_offset">
 
     <link name="${name}_wheel">
 
@@ -119,90 +120,113 @@
         <mass value="${wheel_mass}"/>
         <origin xyz="0 0 0"/>
         <inertia
-          ixx="0.02"
+          ixx="0.03"
           ixy="0"
           ixz="0"
-          iyy="0.02"
+          iyy="0.03"
           iyz="0"
-          izz="0.02"/>
+          izz="0.03"/>
       </inertial>
 
-      <visual name="wheel_tire">
+      <!-- Wheel tread running on top of rail head -->
+      <visual name="tread_visual">
         <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
         <geometry>
           <cylinder
             radius="${wheel_radius}"
-            length="${wheel_width}"/>
+            length="${wheel_tread_width}"/>
         </geometry>
-        <material name="wheel_rubber"/>
+        <material name="wheel_metal"/>
       </visual>
 
-      <collision name="wheel_collision">
+      <!-- Railway wheel flange (inner rim) preventing derailment -->
+      <visual name="flange_visual">
+        <origin xyz="0 ${flange_offset} 0" rpy="${pi/2} 0 0"/>
+        <geometry>
+          <cylinder
+            radius="${flange_radius}"
+            length="${flange_width}"/>
+        </geometry>
+        <material name="wheel_flange_mat"/>
+      </visual>
+
+      <!-- Tread collision -->
+      <collision name="tread_collision">
         <origin xyz="0 0 0" rpy="${pi/2} 0 0"/>
         <geometry>
           <cylinder
             radius="${wheel_radius}"
-            length="${wheel_width}"/>
+            length="${wheel_tread_width}"/>
+        </geometry>
+      </collision>
+
+      <!-- Flange collision -->
+      <collision name="flange_collision">
+        <origin xyz="0 ${flange_offset} 0" rpy="${pi/2} 0 0"/>
+        <geometry>
+          <cylinder
+            radius="${flange_radius}"
+            length="${flange_width}"/>
         </geometry>
       </collision>
 
     </link>
 
-    <!-- Stable wheel-to-rail contact -->
+    <!-- Calibrated contact dynamics: strong forward traction, smooth lateral sliding -->
     <gazebo reference="${name}_wheel">
-      <mu1>1.5</mu1>
-      <mu2>1.5</mu2>
-      <kp>1000000</kp>
-      <kd>100</kd>
+      <mu1>1.0</mu1>
+      <mu2>0.05</mu2>
+      <fdir1>1 0 0</fdir1>
+      <kp>1000000.0</kp>
+      <kd>10.0</kd>
       <minDepth>0.001</minDepth>
-      <maxVel>0.1</maxVel>
+      <maxVel>5.0</maxVel>
+      <material>Gazebo/DarkGrey</material>
     </gazebo>
 
     <joint name="${name}_wheel_joint" type="continuous">
-
       <parent link="base_link"/>
       <child link="${name}_wheel"/>
-
       <origin
         xyz="${x} ${y} ${-base_height/2}"
         rpy="0 0 0"/>
-
       <axis xyz="0 1 0"/>
-
     </joint>
 
   </xacro:macro>
 
-  <!-- Rear wheels -->
+  <!-- Left wheels: flange offset is -0.075 (toward center of track) -->
   <xacro:wheel
     name="rear_left"
     x="-0.34"
-    y="${wheel_y}"/>
+    y="${wheel_y}"
+    flange_offset="-0.09"/>
 
+  <xacro:wheel
+    name="front_left"
+    x="0.34"
+    y="${wheel_y}"
+    flange_offset="-0.09"/>
+
+  <!-- Right wheels: flange offset is +0.075 (toward center of track) -->
   <xacro:wheel
     name="rear_right"
     x="-0.34"
     y="-${wheel_y}"
-    />
-
-  <!-- Front driven wheels -->
-  <xacro:wheel
-    name="front_left"
-    x="0.34"
-    y="${wheel_y}"/>
+    flange_offset="0.09"/>
 
   <xacro:wheel
     name="front_right"
     x="0.34"
-    y="-${wheel_y}"/>
+    y="-${wheel_y}"
+    flange_offset="0.09"/>
 
   <!-- ========================================================= -->
-  <!-- CAMERA                                                     -->
+  <!-- CAMERA LINK & PAN JOINT                                   -->
   <!-- ========================================================= -->
 
   <link name="camera_link">
 
-    <!-- Physical camera housing -->
     <inertial>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <mass value="0.15"/>
@@ -213,6 +237,7 @@
     </inertial>
 
     <visual name="camera_body">
+      <origin xyz="0 0 0" rpy="0 0.32 0"/>
       <geometry>
         <box size="0.16 0.14 0.10"/>
       </geometry>
@@ -220,7 +245,7 @@
     </visual>
 
     <visual name="camera_lens">
-      <origin xyz="0.085 0 0"/>
+      <origin xyz="0.085 0 -0.027" rpy="0 0.32 0"/>
       <geometry>
         <cylinder radius="0.035" length="0.025"/>
       </geometry>
@@ -245,10 +270,8 @@
       friction="0.1"/>
   </joint>
 
-  <!-- Invisible optical sensor mount.
-       It is physically in front of the camera housing. -->
+  <!-- Optical sensor mount angled downward 18.3 deg for track inspection -->
   <link name="camera_sensor_link">
-
     <inertial>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <mass value="0.01"/>
@@ -257,13 +280,12 @@
         iyy="0.000001" iyz="0.0"
         izz="0.000001"/>
     </inertial>
-
   </link>
 
   <joint name="camera_sensor_joint" type="fixed">
     <parent link="camera_link"/>
     <child link="camera_sensor_link"/>
-    <origin xyz="0.14 0 0" rpy="0 0 0"/>
+    <origin xyz="0.14 0 0" rpy="0 0.32 0"/>
   </joint>
 
   <!-- Standard ROS optical frame -->
@@ -300,7 +322,6 @@
   <!-- ========================================================= -->
 
   <link name="lidar_link">
-
     <visual name="lidar_body">
       <geometry>
         <cylinder
@@ -309,7 +330,6 @@
       </geometry>
       <material name="sensor_dark"/>
     </visual>
-
   </link>
 
   <joint name="lidar_joint" type="fixed">
@@ -325,14 +345,12 @@
   <!-- ========================================================= -->
 
   <link name="imu_link">
-
     <visual>
       <geometry>
         <box size="0.07 0.05 0.025"/>
       </geometry>
       <material name="sensor_dark"/>
     </visual>
-
   </link>
 
   <joint name="imu_joint" type="fixed">
@@ -347,26 +365,18 @@
   <!-- GAZEBO RGB CAMERA                                         -->
   <!-- ========================================================= -->
 
-  <!-- ========================================================= -->
-  <!-- GAZEBO RGB CAMERA                                         -->
-  <!-- ========================================================= -->
-
   <gazebo reference="camera_sensor_link">
     <preserveFixedJoint>true</preserveFixedJoint>
 
     <sensor type="camera" name="rgb_camera">
-
       <update_rate>15</update_rate>
-
       <camera>
         <horizontal_fov>1.047</horizontal_fov>
-
         <image>
           <width>640</width>
           <height>480</height>
           <format>R8G8B8</format>
         </image>
-
         <clip>
           <near>0.05</near>
           <far>30.0</far>
@@ -376,109 +386,81 @@
       <plugin
         name="camera_controller"
         filename="libgazebo_ros_camera.so">
-
         <cameraName>railway_rover_camera</cameraName>
         <imageTopicName>/camera/image_raw</imageTopicName>
         <cameraInfoTopicName>/camera/camera_info</cameraInfoTopicName>
         <frameName>camera_optical_frame</frameName>
-
       </plugin>
-
     </sensor>
-
   </gazebo>
-
-  <!-- ========================================================= -->
-  <!-- GAZEBO IMU                                                -->
-  <!-- ========================================================= -->
-
 
   <!-- ========================================================= -->
   <!-- GAZEBO 3D LIDAR                                           -->
   <!-- ========================================================= -->
 
   <gazebo reference="lidar_link">
-
     <sensor type="ray" name="lidar_sensor">
-
       <update_rate>10</update_rate>
-
       <ray>
-
         <scan>
-
           <horizontal>
             <samples>360</samples>
             <resolution>1</resolution>
             <min_angle>-3.14159</min_angle>
             <max_angle>3.14159</max_angle>
           </horizontal>
-
           <vertical>
             <samples>16</samples>
             <resolution>1</resolution>
             <min_angle>-0.35</min_angle>
             <max_angle>0.35</max_angle>
           </vertical>
-
         </scan>
-
         <range>
           <min>0.12</min>
           <max>25.0</max>
           <resolution>0.01</resolution>
         </range>
-
       </ray>
 
       <plugin
         name="lidar_controller"
         filename="libgazebo_ros_block_laser.so">
-
         <topicName>/lidar/points</topicName>
         <frameName>lidar_link</frameName>
-        
-
       </plugin>
-
     </sensor>
-
   </gazebo>
 
   <!-- ========================================================= -->
-  <!-- FRONT-WHEEL DRIVE / DIFFERENTIAL DRIVE                    -->
+  <!-- 4-WHEEL DRIVE CONTROLLER (SKID STEER)                     -->
   <!-- ========================================================= -->
 
   <gazebo>
-
-    <plugin
-      name="diff_drive_controller"
-      filename="libgazebo_ros_diff_drive.so">
-
-      <updateRate>50</updateRate>
-
-      <leftJoint>front_left_wheel_joint</leftJoint>
-      <rightJoint>front_right_wheel_joint</rightJoint>
-
+    <plugin name="skid_steer_drive_controller" filename="libgazebo_ros_skid_steer_drive.so">
+      <updateRate>50.0</updateRate>
+      <robotNamespace>/</robotNamespace>
+      <leftFrontJoint>front_left_wheel_joint</leftFrontJoint>
+      <rightFrontJoint>front_right_wheel_joint</rightFrontJoint>
+      <leftRearJoint>rear_left_wheel_joint</leftRearJoint>
+      <rightRearJoint>rear_right_wheel_joint</rightRearJoint>
       <wheelSeparation>1.50</wheelSeparation>
       <wheelDiameter>0.36</wheelDiameter>
-
-      <wheelTorque>100</wheelTorque>
-      <wheelAcceleration>20.0</wheelAcceleration>
-
-      <commandTopic>/cmd_vel</commandTopic>
-
-      <odometryTopic>/odom</odometryTopic>
-      <odometryFrame>odom</odometryFrame>
       <robotBaseFrame>base_footprint</robotBaseFrame>
-
-      <publishOdom>true</publishOdom>
-      <publishOdomTF>true</publishOdomTF>
-      <publishWheelTF>true</publishWheelTF>
-
+      <torque>100</torque>
+      <topicName>cmd_vel</topicName>
+      <odometryTopic>odom</odometryTopic>
+      <odometryFrame>odom</odometryFrame>
+      <broadcastTF>true</broadcastTF>
+      <covariance_x>0.0001</covariance_x>
+      <covariance_y>0.0001</covariance_y>
+      <covariance_yaw>0.0001</covariance_yaw>
     </plugin>
-
   </gazebo>
+
+  <!-- ========================================================= -->
+  <!-- GAZEBO IMU                                                -->
+  <!-- ========================================================= -->
 
   <gazebo>
     <plugin name="imu_controller" filename="libgazebo_ros_imu.so">
@@ -489,4 +471,5 @@
       <gaussianNoise>0.0</gaussianNoise>
     </plugin>
   </gazebo>
+
 </robot>

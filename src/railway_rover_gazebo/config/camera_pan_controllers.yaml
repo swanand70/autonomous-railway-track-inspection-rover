@@ -9,3 +9,10 @@ camera_pan_controller:
     p: 10.0
     i: 0.0
     d: 0.5
+
+gazebo_ros_control:
+  pid_gains:
+    camera_pan_joint:
+      p: 10.0
+      i: 0.0
+      d: 0.5
